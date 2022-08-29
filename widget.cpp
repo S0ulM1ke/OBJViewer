@@ -28,64 +28,13 @@ void Widget::LoadGLTextures()
     texture1.load(":/files/bricks.jpg");
     initTexture(0, texture1); // инициализация и настройки для текстуры
 
-    texture1.load(":/files/illusion.jpg");
+    texture1.load(":/files/background.jpg");
     initTexture(1, texture1);
 
-    texture1.load(":/files/texture1.bmp");
+    texture1.load(":/files/background.jpg");
     initTexture(2, texture1);
 }
 
-GLuint Widget::drawCube()
-{
-    GLuint num = glGenLists(1);
-    glNewList(num,GL_COMPILE);
-
-    glBegin(GL_QUADS);
-    glNormal3f( 0.0f, 0.0f, 1.0f);     // Нормаль указывает на наблюдателя
-    glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);	// Низ лево
-    glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);	// Низ право
-    glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f,  1.0f);	// Верх право
-    glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f,  1.0f);	// Верх лево
-
-                    // Задняя грань
-    glNormal3f( 0.0f, 0.0f,-1.0f);     // Нормаль указывает от наблюдателя
-    glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);	// Низ право
-    glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);	// Верх право
-    glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);	// Верх лево
-    glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f, -1.0f);	// Низ лево
-
-                    // Верхняя грань
-    glNormal3f( 0.0f, 1.0f, 0.0f);     // Нормаль указывает вверх
-    glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);	// Верх лево
-    glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f,  1.0f,  1.0f);	// Низ лево
-    glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f,  1.0f,  1.0f);	// Низ право
-    glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);	// Верх право
-
-                    // Нижняя грань
-    glNormal3f( 0.0f,-1.0f, 0.0f);     // Нормаль указывает вниз
-    glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f, -1.0f, -1.0f);	// Верх право
-    glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f, -1.0f, -1.0f);	// Верх лево
-    glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);	// Низ лево
-    glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);	// Низ право
-
-                    // Правая грань
-    glNormal3f( 1.0f, 0.0f, 0.0f);     // Нормаль указывает вправо
-    glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f, -1.0f, -1.0f);	// Низ право
-    glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);	// Верх право
-    glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f,  1.0f,  1.0f);	// Верх лево
-    glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);	// Низ лево
-
-                    // Левая грань
-    glNormal3f(-1.0f, 0.0f, 0.0f);     // Нормаль указывает влево
-    glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);	// Низ лево
-    glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);	// Низ право
-    glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f,  1.0f,  1.0f);	// Верх право
-    glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);	// Верх лево
-    glEnd();
-
-    glEndList();
-    return num;
-}
 
 void Widget::keyPressEvent(QKeyEvent *event) {
     if (event->key()==Qt::Key_F) {
@@ -95,9 +44,6 @@ void Widget::keyPressEvent(QKeyEvent *event) {
     if (event->key()==Qt::Key_S) {
         if (paintTimer->isActive()) paintTimer->stop();
         else paintTimer->start();
-    }
-    if (event->key()==Qt::Key_M) {
-        ++model_count%=3;
     }
 }
 
@@ -117,6 +63,25 @@ void Widget::initLight()
     glEnable (GL_LIGHT0);
 }
 
+GLuint Widget::DrawBackground()
+{
+    GLuint num = glGenLists(1);
+        glNewList(num,GL_COMPILE);
+
+        glBegin(GL_QUADS);
+        glNormal3f( 0.0f, 0.0f, 1.0f);     // Нормаль указывает на наблюдателя
+        glTexCoord2f(0.0f, 0.0f); glVertex3f(-6.0f, -6.0f,  -2.0f);	// Низ лево
+        glTexCoord2f(1.0f, 0.0f); glVertex3f( 6.0f, -6.0f,  -2.0f);	// Низ право
+        glTexCoord2f(1.0f, 1.0f); glVertex3f( 6.0f,  6.0f,  -2.0f);	// Верх право
+        glTexCoord2f(0.0f, 1.0f); glVertex3f(-6.0f,  6.0f,  -2.0f);	// Верх лево
+
+        glEnd();
+
+        glEndList();
+        return num;
+
+}
+
 void Widget::initializeGL()
 {
     glEnable(GL_MULTISAMPLE); // сглаживание MSAA вкл
@@ -128,10 +93,10 @@ void Widget::initializeGL()
     glDepthFunc(GL_LESS); // Тип теста глубины
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST); // Улучшение в вычислении перспективы
     initLight(); // включаем свет
-    model[0] = objloader::Instance().load(":/files/monkey2.obj");
-    model[1] = objloader::Instance().load(":/files/sidor.obj");
-    model[2] = drawCube();
-    torus = objloader::Instance().load(":/files/torus.obj");
+    model = objloader::Instance().load(modelURL);
+//    torus = objloader::Instance().load(":/files/torus.obj");
+    torus = DrawBackground();
+
 }
 
 void Widget::resizeGL(int nWidth, int nHeight)
@@ -156,13 +121,16 @@ void Widget::paintGL() // рисование
     glLoadIdentity();           // сбросить текущую матрицу
     glBindTexture(GL_TEXTURE_2D, texture[2]);
     glTranslatef(0,0,-2.5);
-    glDeleteLists(torus,1);
-    torus = objloader::Instance().draw(angle/100);
+//    glDeleteLists(torus,1);
+//    torus = objloader::Instance().draw(angle/100);
     glCallList(torus);
-     glTranslatef(0,0,0.1f);
+    glTranslatef(0,0,0.1f);
     glRotatef(angle,0.0f,1.0f,0.0f);
     glBindTexture(GL_TEXTURE_2D, texture[texture_count]);
-    glCallList(model[model_count]);
+    glCallList(model);
+
+
+
 
     angle += 0.4f;
 }

@@ -6,5 +6,6 @@
         <file>files/sidor.obj</file>
         <file>files/texture1.bmp</file>
         <file>files/torus.obj</file>
+        <file>files/background.jpg</file>
     </qresource>
 </RCC>

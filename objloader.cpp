@@ -12,7 +12,6 @@ GLuint objloader::load(const QString &filename)
     vector<face>().swap(faces);
 
     QFile in(filename);
-
     if(!in.open(QFile::ReadOnly | QFile::Text)){
         qDebug() << "Не удалось открыть файл с моделью!";
     }
