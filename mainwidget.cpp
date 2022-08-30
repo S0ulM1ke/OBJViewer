@@ -6,20 +6,16 @@ MainWidget::MainWidget(QWidget *parent)
 {
     m = new Widget(this);
 
-//    QBoxLayout *gl = new QBoxLayout(this);
+    QGridLayout *gl = new QGridLayout(this);
     QVBoxLayout *vbox = new QVBoxLayout(this);
     QHBoxLayout *hbox = new QHBoxLayout();
+
+    gl->setContentsMargins(0, 0, 0, 0);
+    gl->addWidget(m);
 
     open = new QPushButton("Upload OBJ",this);
     stopRot = new QPushButton("Stop rotation", this);
     reset = new QPushButton("Reset", this);
-
-
-//    gl->setSpacing(0);
-//    gl->setContentsMargins(0, 0, 0, 0);
-//    gl->addWidget(m);
-    vbox->addWidget(m);
-
 
     hbox->addWidget(open, 0, Qt::AlignCenter);
     hbox->addWidget(stopRot, 0, Qt::AlignCenter);
@@ -28,11 +24,24 @@ MainWidget::MainWidget(QWidget *parent)
     vbox->addStretch(1);
     vbox->addLayout(hbox);
 
-//    vbox->addLayout(gl);
+    m->setLayout(vbox);
+
+    //  СДЕЛАЙ СЕТЕРЫ И ГЕТЕРЫ ДУБИНА!!!
 
     connect(open, &QPushButton::clicked, this, &MainWidget::openOBJ);
     connect(stopRot, &QPushButton::clicked, this, &MainWidget::onStopRot);
     connect(reset, &QPushButton::clicked, this, &MainWidget::onReset);
+
+}
+
+void MainWidget::resizeEvent(QResizeEvent *e)
+{
+
+    Q_UNUSED(e);
+//    QSize currentSize = e->size();
+//    m->resizeGL(currentSize.width(), currentSize.height());
+//    m->repaint();
+//    QWidget::resizeEvent(e);
 
 }
 
@@ -69,5 +78,6 @@ void MainWidget::openOBJ()
 
 void MainWidget::onReset()
 {
-
+    m->resetMatrix = false;
+    m->angle = 0;
 }

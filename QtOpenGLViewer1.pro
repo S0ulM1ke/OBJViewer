@@ -15,11 +15,13 @@ SOURCES += \
     main.cpp \
     mainwidget.cpp \
     objloader.cpp \
+    objloaderthread.cpp \
     widget.cpp
 
 HEADERS += \
     mainwidget.h \
     objloader.h \
+    objloaderthread.h \
     widget.h
 
 # Default rules for deployment.

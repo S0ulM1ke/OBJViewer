@@ -124,8 +124,14 @@ void Widget::paintGL() // рисование
 //    glDeleteLists(torus,1);
 //    torus = objloader::Instance().draw(angle/100);
     glCallList(torus);
+    glPushMatrix();
     glTranslatef(0,0,0.1f);
     glRotatef(angle,0.0f,1.0f,0.0f);
+    if (!resetMatrix)
+    {
+        glPopMatrix();
+        resetMatrix = true;
+    }
     glBindTexture(GL_TEXTURE_2D, texture[texture_count]);
     glCallList(model);
 

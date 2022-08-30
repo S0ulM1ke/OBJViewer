@@ -28,6 +28,7 @@ class Widget : public QOpenGLWidget
 
 public:
     Widget(QWidget *parent = nullptr);
+    bool resetMatrix = true;
 
 private:
     QString modelURL = ":/files/monkey2.obj";

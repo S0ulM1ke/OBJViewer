@@ -22,6 +22,7 @@ private:
     QPushButton *open;
     QPushButton *stopRot;
     QPushButton *reset;
+    void resizeEvent(QResizeEvent *e);
 
 private slots:
     void onStopRot();
