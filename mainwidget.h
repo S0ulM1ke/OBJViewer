@@ -6,7 +6,6 @@
 #include <QFileDialog>
 #include <QPushButton>
 #include <QHBoxLayout>
-#include "objloader.h"
 #include "widget.h"
 
 
@@ -27,7 +26,6 @@ private:
 private slots:
     void onStopRot();
     void openOBJ();
-    void onReset();
 };
 
 

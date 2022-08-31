@@ -9,6 +9,33 @@ Widget::Widget(QWidget *parent) : QOpenGLWidget(parent)
     paintTimer->start();
 }
 
+void Widget::setModel(QString newModel)
+{
+    glDeleteLists(model, 0);
+    model = objloader::Instance().load(newModel);
+}
+
+void Widget::setResetMatrix()
+{
+    resetMatrix = false;
+    angle = 0;
+}
+
+void Widget::setRotation(bool mode)
+{
+    modelRotation = mode;
+    isManuallyStoped = mode;
+//    if (modelRotation)
+//        modelRotation = false;
+//     else
+//        modelRotation = true;
+}
+
+bool Widget:: isModelRotation() const
+{
+    return modelRotation;
+}
+
 void Widget::initTexture(uint index, QImage &texture1)
 {
     texture1.convertTo(QImage::Format_RGBA8888); // формат текстуры OpenGL
@@ -16,6 +43,36 @@ void Widget::initTexture(uint index, QImage &texture1)
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR); // параметры фильтрации
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
     glTexImage2D(GL_TEXTURE_2D, 0, 3, GLsizei(texture1.width()), GLsizei(texture1.height()), 0, GL_RGBA, GL_UNSIGNED_BYTE, texture1.bits()); // заливаю текстуру
+}
+
+void Widget::mousePressEvent(QMouseEvent *mo)
+{
+    if (mPos.isNull()) {
+        mPos = mo->pos();
+    } else {
+
+    }
+//    mPos = mo->pos();
+    if (mo->button() == Qt::LeftButton && !isManuallyStoped) {
+        modelRotation = false;
+    }
+}
+
+void Widget::mouseReleaseEvent(QMouseEvent *mo)
+{
+
+//    mPos = mo->pos();
+    if (mo->button() == Qt::LeftButton && isManuallyStoped) {
+        modelRotation = true;
+    }
+}
+
+void Widget::mouseMoveEvent(QMouseEvent *mo)
+{
+    xMouseRot = 1/M_PI*(mo->pos().y() - mPos.y());
+    yMouseRot = 1/M_PI*(mo->pos().x() - mPos.x());
+//    mPos = mo->pos();
+
 }
 
 void Widget::LoadGLTextures()
@@ -93,7 +150,7 @@ void Widget::initializeGL()
     glDepthFunc(GL_LESS); // Тип теста глубины
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST); // Улучшение в вычислении перспективы
     initLight(); // включаем свет
-    model = objloader::Instance().load(modelURL);
+    model = objloader::Instance().load(":/files/monkey2.obj");
 //    torus = objloader::Instance().load(":/files/torus.obj");
     torus = DrawBackground();
 
@@ -126,19 +183,22 @@ void Widget::paintGL() // рисование
     glCallList(torus);
     glPushMatrix();
     glTranslatef(0,0,0.1f);
-    glRotatef(angle,0.0f,1.0f,0.0f);
+//    glRotatef(angle,0.0f,1.0f,0.0f);
+    if (modelRotation){
+        angle += 0.4f;
+    }
     if (!resetMatrix)
     {
         glPopMatrix();
         resetMatrix = true;
     }
+    glRotatef(xMouseRot, 1, 0, 0);
+    glRotatef(yMouseRot, 0 , 1, 0);
     glBindTexture(GL_TEXTURE_2D, texture[texture_count]);
     glCallList(model);
 
 
-
-
-    angle += 0.4f;
+//    angle += 0.4f;
 }
 
 

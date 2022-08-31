@@ -1,5 +1,4 @@
 #include "mainwidget.h"
-#include <GL/gl.h>
 
 MainWidget::MainWidget(QWidget *parent)
     : QWidget{parent}
@@ -30,7 +29,7 @@ MainWidget::MainWidget(QWidget *parent)
 
     connect(open, &QPushButton::clicked, this, &MainWidget::openOBJ);
     connect(stopRot, &QPushButton::clicked, this, &MainWidget::onStopRot);
-    connect(reset, &QPushButton::clicked, this, &MainWidget::onReset);
+    connect(reset, SIGNAL(clicked()), m, SLOT(setResetMatrix()));
 
 }
 
@@ -47,12 +46,12 @@ void MainWidget::resizeEvent(QResizeEvent *e)
 
 void MainWidget::onStopRot()
 {
-    if (m->paintTimer->isActive()){
-        m->paintTimer->stop();
+    if (m->isModelRotation()){
+        m->setRotation(false);
         stopRot->setText("Rotate");
     }
     else {
-        m->paintTimer->start();
+        m->setRotation(true);
         stopRot->setText("Stop rotation");
     }
 }
@@ -67,17 +66,12 @@ void MainWidget::openOBJ()
 
     if( !filename.isNull() )
     {
+        m->setModel(filename);
 
-       glDeleteLists(m->model, 0);
-        m->model = objloader::Instance().load(filename);
+//       glDeleteLists(m->model, 0);
+//        m->model = objloader::Instance().load(filename);
 //        m->modelURL = filename;
 //        m->torus = objloader::Instance().load(":/files/torus.obj");
     }
 
-}
-
-void MainWidget::onReset()
-{
-    m->resetMatrix = false;
-    m->angle = 0;
 }
