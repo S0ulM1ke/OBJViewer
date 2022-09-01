@@ -18,17 +18,18 @@ void Widget::setModel(QString newModel)
 void Widget::setResetMatrix()
 {
     resetMatrix = false;
+    xPrevRot = 0;
+    yPrevRot = 0;
+    xMouseRot = 0;
+    yMouseRot = 0;
     angle = 0;
+    zWheel = 1.0f;
 }
 
 void Widget::setRotation(bool mode)
 {
     modelRotation = mode;
     isManuallyStoped = mode;
-//    if (modelRotation)
-//        modelRotation = false;
-//     else
-//        modelRotation = true;
 }
 
 bool Widget:: isModelRotation() const
@@ -47,21 +48,17 @@ void Widget::initTexture(uint index, QImage &texture1)
 
 void Widget::mousePressEvent(QMouseEvent *mo)
 {
-    if (mPos.isNull()) {
-        mPos = mo->pos();
-    } else {
 
-    }
-//    mPos = mo->pos();
-    if (mo->button() == Qt::LeftButton && !isManuallyStoped) {
+    mPos = mo->pos();
+    if (mo->button() == Qt::LeftButton && isManuallyStoped) {
         modelRotation = false;
     }
 }
 
 void Widget::mouseReleaseEvent(QMouseEvent *mo)
 {
-
-//    mPos = mo->pos();
+    xPrevRot = xMouseRot;
+    yPrevRot = yMouseRot;
     if (mo->button() == Qt::LeftButton && isManuallyStoped) {
         modelRotation = true;
     }
@@ -69,10 +66,13 @@ void Widget::mouseReleaseEvent(QMouseEvent *mo)
 
 void Widget::mouseMoveEvent(QMouseEvent *mo)
 {
-    xMouseRot = 1/M_PI*(mo->pos().y() - mPos.y());
-    yMouseRot = 1/M_PI*(mo->pos().x() - mPos.x());
-//    mPos = mo->pos();
+    xMouseRot = xPrevRot + (1/M_PI*(mo->pos().y() - mPos.y()));
+    yMouseRot = yPrevRot + (1/M_PI*(mo->pos().x() - mPos.x()));
+}
 
+void Widget::wheelEvent(QWheelEvent *wh)
+{
+    zWheel = zWheel + wh->angleDelta().y() / 9000.0f;
 }
 
 void Widget::LoadGLTextures()
@@ -183,7 +183,7 @@ void Widget::paintGL() // рисование
     glCallList(torus);
     glPushMatrix();
     glTranslatef(0,0,0.1f);
-//    glRotatef(angle,0.0f,1.0f,0.0f);
+    glRotatef(angle,0.0f,1.0f,0.0f);
     if (modelRotation){
         angle += 0.4f;
     }
@@ -192,10 +192,13 @@ void Widget::paintGL() // рисование
         glPopMatrix();
         resetMatrix = true;
     }
-    glRotatef(xMouseRot, 1, 0, 0);
-    glRotatef(yMouseRot, 0 , 1, 0);
+    glRotatef(xMouseRot, 1.0f, 0.0f, 0.0f); // кручение по вращении мышкой Х
+    glRotatef(yMouseRot, 0.0f , 1.0f, 0.0f); // кручение по вращении мышкой Y
+//    glTranslatef(0, 0, zWheel);
     glBindTexture(GL_TEXTURE_2D, texture[texture_count]);
+    glScaled(zWheel, zWheel, zWheel);
     glCallList(model);
+
 
 
 //    angle += 0.4f;

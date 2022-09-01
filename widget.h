@@ -37,8 +37,12 @@ private:
     bool modelRotation = true;
     bool isManuallyStoped = true;
 
-    float xMouseRot, yMouseRot , zMouseRot;
+    GLfloat xMouseRot = 0;
+    GLfloat yMouseRot = 0;
+    GLfloat xPrevRot = 0;
+    GLfloat yPrevRot = 0;
     QPoint mPos;
+    GLfloat zWheel = 1.0f;
 
     void initLight(); //Включить свет
     GLuint DrawBackground();
@@ -47,6 +51,7 @@ private:
     void mousePressEvent(QMouseEvent*) override;
     void mouseReleaseEvent(QMouseEvent*) override;
     void mouseMoveEvent(QMouseEvent*) override;
+    void wheelEvent(QWheelEvent*) override;
     virtual void keyPressEvent(QKeyEvent *event) override;
 
 protected:
